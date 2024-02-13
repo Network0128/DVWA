@@ -25,3 +25,8 @@ if( isset( $_GET[ 'Login' ] ) ) { // 'Login' GET 요청이 있는지 확인
 }
 
 ?>
+
+//이 코드는 사용자가 입력한 아이디와 비밀번호를 데이터베이스에서 찾고, 문제가 생기면 에러 메시지를 출력하는 역할을 합니다.
+//$result = mysqli_query($GLOBALS["___mysqli_ston"],  $query ): 이 부분은 데이터베이스에 질의를 보내는 부분입니다. 사용자가 입력한 아이디와 비밀번호를 데이터베이스에서 찾습니다.
+//or die(...): 만약 데이터베이스 질의에 문제가 생기면, 이 부분이 실행됩니다. 즉, 에러 메시지를 출력하고 프로그램을 종료합니다.
+//' <pre>' . ((is_object($GLOBALS["___mysqli_ston"])) ? mysqli_error($GLOBALS["___mysqli_ston"]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : false)) . '</pre>': 이 부분은 에러 메시지를 만드는 부분입니다. 데이터베이스 연결에 문제가 있으면 그 에러를, 그렇지 않으면 마지막에 발생한 에러를 출력합니다.
