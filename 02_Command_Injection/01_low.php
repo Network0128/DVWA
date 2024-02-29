@@ -1,55 +1,43 @@
+<< 아래 코드 요약 >> 
+기능:
+사용자가 입력한 IP 주소에 대한 ping 명령어를 실행하고 결과를 출력합니다.
+Windows와 *nix 운영 체제를 모두 지원합니다.
+
+주요 특징:
+$_REQUEST['ip'] 변수를 사용하여 사용자 입력 IP 주소를 받아옵니다.
+stristr() 함수를 사용하여 운영 체제를 구분합니다.
+shell_exec() 함수를 사용하여 ping 명령어를 실행합니다.
+pre 태그를 사용하여 ping 명령어 실행 결과를 출력합니다.
+
+주의 사항:
+shell_exec() 함수는 임의의 명령어를 실행할 수 있기 때문에 위험할 수 있습니다.
+사용자 입력값을 제대로 검증하지 않으면 공격자가 임의의 명령어를 실행하도록 유도할 수 있습니다.
+이 코드는 교육 목적으로만 사용해야 합니다.
+
+개선점:
+사용자 입력값을 검증하여 유효한 IP 주소인지 확인해야 합니다.
+shell_exec() 함수 대신에 exec() 함수를 사용하는 것이 더 안전합니다.
+
 <?php
 
-// 코드 설명
+// "Submit" 버튼이 눌렸는지 확인
+if( isset( $_POST[ 'Submit' ] ) ) {
 
-/**
- * ping 명령어를 실행하고 결과를 출력합니다.
- *
- * @param string $target 대상 IP 주소
- *
- * @return string ping 명령어 실행 결과
- */
-function ping( $target ) {
+  // 입력값 가져오기
+  $target = $_REQUEST[ 'ip' ];  // 사용자로부터 입력받은 IP 주소를 저장함
 
-  // 사용자 입력값을 검증합니다.
-  if( !filter_var( $target, FILTER_VALIDATE_IP ) ) {
-    throw new InvalidArgumentException( '유효한 IP 주소를 입력하세요.' );
-  }
-
-  // 운영 체제 정보를 가져옵니다.
-  $os = php_uname( 's' );
-
-  // 운영 체제에 따라 ping 명령어를 구성합니다.
-  $cmd = '';
-  if( stristr( $os, 'Windows NT' ) ) {
-    // Windows
-    $cmd = 'ping ' . $target;
+  // 운영 체제에 따라 ping 명령어 실행
+  if( stristr( php_uname( 's' ), 'Windows NT' ) ) {
+    // Windows 운영 체제인 경우
+    $cmd = shell_exec( 'ping ' . $target );  // Windows 환경에서 ping 명령어 실행
   }
   else {
-    // *nix (Linux, macOS 등)
-    $cmd = 'ping -c 4 ' . $target;
+    // *nix (Linux, macOS 등) 운영 체제인 경우
+    $cmd = shell_exec( 'ping -c 4 ' . $target );  // *nix 환경에서 ping 명령어 실행 (4번 제한)
   }
 
-  // ping 명령어를 실행하고 결과를 저장합니다.
-  $output = shell_exec( $cmd );
-
-  // ping 명령어 실행 결과를 반환합니다.
-  return $output;
+  // 결과 출력
+  echo "<pre>{$cmd}</pre>";  // ping 명령어 실행 결과를 pre 태그로 감싸서 그대로 출력
 }
-
-// 주의 사항
-
-* 이 코드는 교육 목적으로만 사용해야 합니다.
-* 실제 환경에서 사용하기 전에 보안 취약점을 확인하고 필요한 조치를 취해야 합니다.
-* `shell_exec()` 함수는 임의의 명령어를 실행할 수 있기 때문에 위험할 수 있습니다.
-* 사용자 입력값을 제대로 검증하지 않으면 공격자가 임의의 명령어를 실행하도록 유도할 수 있습니다.
-* 코드를 사용하기 전에 보안 전문가의 도움을 받는 것이 좋습니다.
-
-// 코드 예시
-
-$target = '127.0.0.1';
-$output = ping( $target );
-
-echo "<pre>{$output}</pre>";
 
 ?>
